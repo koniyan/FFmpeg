@@ -391,6 +391,21 @@ static av_cold void uninit(AVFilterContext *ctx)
     swr_free(&pan->swr);
 }
 
+static int command(AVFilterContext *ctx, const char *cmd, const char *arg, char *res, int res_len, int flags)
+{
+    if (!strcmp(cmd, "reinit")) {
+        int ret;
+        uninit(ctx);
+        if ((ret = av_set_options_string(ctx, arg, "=", ":")) < 0)
+            return ret;
+        if ((ret = init(ctx)) < 0)
+            return ret;
+        return config_props(ctx->inputs[0]);
+    }
+
+    return AVERROR(ENOSYS);
+}
+
 #define OFFSET(x) offsetof(PanContext, x)
 
 static const AVOption pan_options[] = {
@@ -428,4 +443,5 @@ AVFilter ff_af_pan = {
     .query_formats = query_formats,
     .inputs        = pan_inputs,
     .outputs       = pan_outputs,
+    .process_command = command,
 };
