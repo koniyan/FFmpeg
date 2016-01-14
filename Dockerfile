@@ -98,7 +98,6 @@ RUN cd /opt/ffmpeg_sources/ffmpeg && \
     make distclean && \
     hash -r
 
-ADD Osaka.ttf /usr/share/fonts/Osaka.tff
 WORKDIR "/opt/bin"
 env LD_LIBRARY_PATH=/opt/ffmpeg_build/lib
 ENV TZ JST-9
